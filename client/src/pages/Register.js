@@ -41,6 +41,7 @@ const Register = () => {
     }
 
     const currentUser = { name, email, password };
+
     if (isMember) {
       setupUser({
         currentUser,

@@ -4,6 +4,9 @@ import {
   SETUP_USER_BEGIN,
   SETUP_USER_SUCCESS,
   SETUP_USER_ERROR,
+  LOGIN_USER_BEGIN,
+  LOGIN_USER_SUCCESS,
+  LOGIN_USER_ERROR,
 } from './actions';
 
 const reducer = (state, action) => {
@@ -49,6 +52,7 @@ const reducer = (state, action) => {
       alertText: action.payload.msg,
     };
   }
+
   throw new Error(`no such action :${action.type}`);
 };
 export default reducer;
