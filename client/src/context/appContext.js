@@ -8,6 +8,8 @@ import {
   SETUP_USER_BEGIN,
   SETUP_USER_SUCCESS,
   SETUP_USER_ERROR,
+  TOGGLE_SIDEBAR,
+  LOGOUT_USER,
 } from './actions';
 
 const token = localStorage.getItem('token');
@@ -20,6 +22,7 @@ export const initialState = {
   alertText: '',
   alertType: '',
   user: user ? JSON.parse(user) : null,
+  showSidebar: false,
   token: token,
   userLocation: userLocation || '',
   jobLocation: userLocation || '',
@@ -50,6 +53,12 @@ const AppProvider = ({ children }) => {
     localStorage.setItem('location', location);
   };
 
+  const removeUserFromLocalStorage = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    localStorage.removeItem('location');
+  };
+
   const setupUser = async ({ currentUser, endPoint, alertText }) => {
     dispatch({ type: SETUP_USER_BEGIN });
     try {
@@ -65,12 +74,23 @@ const AppProvider = ({ children }) => {
       });
       addUserToLocalStorage({ user, token, location });
     } catch (error) {
+      console.log(error.response.data);
       dispatch({
         type: SETUP_USER_ERROR,
+
         payload: { msg: error.response.data.msg },
       });
     }
     clearAlert();
+  };
+
+  const toggleSidebar = () => {
+    dispatch({ type: TOGGLE_SIDEBAR });
+  };
+
+  const logoutUser = () => {
+    dispatch({ type: LOGOUT_USER });
+    removeUserFromLocalStorage();
   };
 
   return (
@@ -79,6 +99,8 @@ const AppProvider = ({ children }) => {
         ...state,
         displayAlert,
         setupUser,
+        toggleSidebar,
+        logoutUser,
       }}
     >
       {children}

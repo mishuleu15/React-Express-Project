@@ -6,7 +6,7 @@ const register = async (req, res) => {
   const { name, email, password } = req.body;
 
   if (!name || !email || !password) {
-    throw new BadRequestError('please provide all values');
+    throw new BadRequestError('Please provide all values');
   }
 
   const userAlreadyExists = await User.findOne({ email });
