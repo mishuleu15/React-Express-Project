@@ -4,6 +4,7 @@ import 'dotenv/config';
 import 'express-async-errors';
 import colors from 'colors';
 import morgan from 'morgan';
+import authenticateUser from './middleware/auth.js';
 
 // db and authenticateUser
 import connectDB from './db/connect.js';
@@ -27,7 +28,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/v1/auth', authRouter);
-app.use('/api/v1/jobs', jobsRouter);
+app.use('/api/v1/jobs', authenticateUser, jobsRouter);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
