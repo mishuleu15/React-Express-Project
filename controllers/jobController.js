@@ -35,11 +35,43 @@ const getAllJobs = async (req, res) => {
 };
 
 const updateJob = async (req, res) => {
-  res.send('updateJob');
+  const { id: jobId } = req.params;
+  const { company, position } = req.body;
+
+  if (!position || !company) {
+    throw new BadRequestError('Please provide all values');
+  }
+  const job = await Job.findOne({ _id: jobId });
+
+  if (!job) {
+    throw new NotFoundError(`No job with id :${jobId}`);
+  }
+  // check permissions
+
+  checkPermissions(req.user, job.createdBy);
+
+  const updatedJob = await Job.findOneAndUpdate({ _id: jobId }, req.body, {
+    new: true,
+    runValidators: true,
+  });
+
+  res.status(StatusCodes.OK).json({ updatedJob });
 };
 
 const deleteJob = async (req, res) => {
-  res.send('deleteJob');
+  const { id: jobId } = req.params;
+
+  const job = await Job.findOne({ _id: jobId });
+
+  if (!job) {
+    throw new NotFoundError(`No job with id :${jobId}`);
+  }
+
+  checkPermissions(req.user, job.createdBy);
+
+  await job.remove();
+
+  res.status(StatusCodes.OK).json({ msg: 'Success! Job removed' });
 };
 
 const showStats = async (req, res) => {
